@@ -1,0 +1,49 @@
+Your @CrossOrigin is not working for the OPTIONS request.
+That's why frontend shows net::ERR_FAILED.
+
+You need to allow CORS globally for all APIs, not just per controller.
+ add scan pacakge all the packlages in main applicatioon:
+ 
+ @SpringBootApplication(scanBasePackages = { "com.chatbot"})
+ 
+
+
+
+
+
+2)
+whenver I try to have my repository intrfce in seperate package this error comes:***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Parameter 1 of constructor in com.chatbot.controller.ChatbotController required a bean of type 'com.chatbot.repository.UserRepository' that could not be found.
+
+
+Action:
+
+Consider defining a bean of type 'com.chatbot.repository.UserRepository' in your configuration.
+
+
+When you place your repository interface in a separate package and see the error:
+
+text
+Parameter 1 of constructor in com.chatbot.controller.ChatbotController required a bean of type 'com.chatbot.repository.UserRepository' that could not be found.
+it means Spring Boot is not scanning your repository package for JPA repositories, so it does not create the UserRepository bean, and dependency injection fails.
+
+Why This Happens
+
+By default, Spring Boot scans for JPA repositories in the package where your main application class (@SpringBootApplication) is located and its subpackages.
+
+If your repository is in a package not covered by this default scan (for example, if your main class is in com.chatbot.main and your repository is in com.chatbot.repository but your scan configuration does not include it), Spring Boot will not find it.
+
+so add this.
+
+@EnableJpaRepositories(basePackages = "com.chatbot.repository")
+
+
+3)for the separate  table datas also we have to add
+
+@EntityScan(basePackages = { "com.chatbot.model" })
+

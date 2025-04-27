@@ -1,0 +1,14 @@
+@import "tailwindcss";
+
+body {
+    background-image: url('/src/assets/BackgroundImage.png'); /* Path to your background image */
+    background-size: cover; /* Ensures the image covers the whole page */
+    background-position: center center; /* Centers the image */
+    background-repeat: no-repeat; /* Prevents image from repeating */
+  }
+  
+  /* Optional: Add some padding or margin if needed to prevent text from sticking to the edges */
+  html, body {
+    height: 100%;
+    margin: 0;
+  }
