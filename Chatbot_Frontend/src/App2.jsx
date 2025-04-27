@@ -10,8 +10,8 @@ import LearningTab from "./components/Tabs/LearningTab";
 import { SocialLinksTab } from "./components/Tabs/SocialLinksTab";
 import ChatTab from "./components/Tabs/ChatTab";
 import chatbotData from "./Data/ChatbotData";
-
 const App = () => {
+
   const [messages, setMessages] = useState([
     { sender: "bot", text: "Hello! Ask me anything." },
   ]);
@@ -93,13 +93,17 @@ const App = () => {
 
                   {/* Tab Content */}
                   <div className="p-6">
+               
+      
                     {activeTab === "chat" && (
                       <ChatTab
-                      
-                        chatbotData={chatbotData}
+                      setMessages={setMessages}
+  input={input}
+  setInput={setInput}
+  isTyping={isTyping}
+  setIsTyping={setIsTyping}
+                      chatbotData={chatbotData}
                         messages={messages}
-                        input={input}
-                        isTyping={isTyping}
                         showQuestions={showQuestions}
                         handleQuestionClick={handleQuestionClick}
                         handleInputChange={handleInputChange}
@@ -109,6 +113,7 @@ const App = () => {
                     {activeTab === "docs" && <DocsTab />}
                     {activeTab === "learning" && <LearningTab />}
                     {activeTab === "social" && <SocialLinksTab />}
+                
                   </div>
                 </div>
               ) : (

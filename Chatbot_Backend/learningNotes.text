@@ -7,3 +7,9 @@ body: JSON.stringify({ username, password }), from the front end
  @RequestBody?
  The @RequestBody annotation tells Spring to map the incoming JSON request body to a Map<String, String>, 
  allowing you to extract fields like username and password from the request.
+
+
+return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+
+HttpStatus.INTERNAL_SERVER_ERROR->This sets the HTTP status code of the response to 500, which indicates a server-side error.
+body(error):->This sets the content of the HTTP response body to the value of the error variable. This could be a string, a map, or any object containing error details

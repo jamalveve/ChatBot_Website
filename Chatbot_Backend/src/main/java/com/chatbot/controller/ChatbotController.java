@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
@@ -27,7 +28,7 @@ import com.chatbot.service.UserService;
 @RestController
 @Validated
 
-@CrossOrigin(origins = "http://localhost:5173") // Allow requests from your React app
+@CrossOrigin(origins = "http://localhost:5174") // Allow requests from your React app
 @RequestMapping("/api")
 public class ChatbotController {
 
@@ -58,6 +59,10 @@ public class ChatbotController {
 
 	@Autowired
     private UserService userService;
+
+	// @Autowired
+    // @Qualifier("enableLearningMode")
+    // private Boolean enableLearningMode; 
 
 	 @PostMapping("/register")
 	    public ResponseEntity<Map<String, String>> registerUser( @RequestBody Map<String, String> requestBody) {
@@ -140,5 +145,22 @@ public class ChatbotController {
     return ResponseEntity.ok(qnaList);
     }
 	 
+	@GetMapping("/feature-flags")
+	public Map<String, Boolean> getFeatureFlags() {
+		Map<String, Boolean> flags = new HashMap<>();
+		flags.put("learningMode", qaService.isLearningModeEnabled());
+		return flags;
+	}
+	@PostMapping("/chatbot/teach")
+public ResponseEntity<?> teachBot(@RequestBody Map<String, String> request) {
+    String question = request.get("question");
+    String answer = request.get("answer");
+    if (question != null && answer != null) {
+        qaService.getQnAList().add(new QADatas(question, answer));
+        return ResponseEntity.ok(Map.of("message", "Learned successfully"));
+    } else {
+        return ResponseEntity.badRequest().body(Map.of("error", "Missing question or answer"));
+    }
+}
 
 }

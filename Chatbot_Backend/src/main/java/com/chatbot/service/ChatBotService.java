@@ -3,6 +3,8 @@ package com.chatbot.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.chatbot.model.QADatas;
@@ -14,14 +16,28 @@ public class ChatBotService {
 	public List<QADatas> qnaList;
     public final String defaultMessage;
 
-	
+	private final Boolean enableLearningMode; // <-- Add this field
+ @Autowired
+    public ChatBotService(
+        @Qualifier("enableLearningMode") Boolean enableLearningMode
+    ) {
+        this.defaultMessage = "I'm a helpful assistant 🤖";
+        this.enableLearningMode = enableLearningMode;
+        initializeQnA();
+    }
+
 	public ChatBotService(String defaultMessage) {
         this.defaultMessage = defaultMessage;
+		//have to intialise must or compiler error
+		this.enableLearningMode = true; // <-- initialize here
+
         initializeQnA(); // ✅ Fix: call this to populate the list
 
 	}
 	public ChatBotService() {
 		 this.defaultMessage = "";
+		 this.enableLearningMode = false; // <-- initialize here
+
 	        initializeQnA(); // Also works for no-arg constructor
 	        
 	}
@@ -95,13 +111,47 @@ public class ChatBotService {
     public List<QADatas> getQnAList() {
 		return qnaList;
 	}
-	public String getAnswer(String question) {
-	    for (QADatas qa : qnaList) {
-	        if (qa.getQuestion().equalsIgnoreCase(question.trim())) {
-	            return qa.getAnswer();
-	        }
-	    }
-	    return "❌ Sorry, I couldn't find an answer to that question.";
-	}
+	// public String getAnswer(String question) {
+	//     for (QADatas qa : qnaList) {
+	//         if (qa.getQuestion().equalsIgnoreCase(question.trim())) {
+	//             return qa.getAnswer();
+	//         }
+	//     }
+	//     return "❌ Sorry, I couldn't find an answer to that question.";
+	// }
+//updated after config
+
+
+private String normalize(String s) {
+    return s == null ? "" : s.trim().replaceAll("\\p{Punct}", "").toLowerCase();
+}
+	// Main answer logic with normalization
+    public String getAnswer(String question) {
+        String normQuestion = normalize(question);
+        for (QADatas qa : qnaList) {
+            if (normalize(qa.getQuestion()).equals(normQuestion)) {
+                return qa.getAnswer();
+            }
+        }
+        // Learning mode logic
+        if (Boolean.TRUE.equals(enableLearningMode)) {
+            return "Learning mode is ON. I don't know the answer yet, but you can teach me!";
+        }
+        return "❌ Sorry, I couldn't find an answer to that question.";
+    }
+
+    // public boolean isLearningModeEnabled() {
+    //     return Boolean.TRUE.equals(enableLearningMode);
+    // }
+
+    // For teach mode: add new Q&A
+    public void addQnA(String question, String answer) {
+        qnaList.add(new QADatas(question, answer));
+    }
+
+    // Example method to check if learning mode is enabled (optional)
+    public boolean isLearningModeEnabled() {
+        return enableLearningMode != null && enableLearningMode;
+    }
 
 }
