@@ -55,34 +55,29 @@ public class ChatbotController {
         this.userRepository = userRepository;
     }
 
-//	@PostMapping("/register")
-////	        http://localhost:8080/api/register
-//	public ResponseEntity<String> registerUser(@RequestBody Map<String, String> registrationData) {
-//		String username = registrationData.get("username");
-//		String password = registrationData.get("password");
-//		// TODO: Validate data and save user to database
-//		System.out.println("the login user:" + username);
-//		return ResponseEntity.ok("User Login successfully!");
-//	}
+
 	@Autowired
     private UserService userService;
 
 	 @PostMapping("/register")
 	    public ResponseEntity<Map<String, String>> registerUser( @RequestBody Map<String, String> requestBody) {
-	        String username = requestBody.get("username");
-	        String password = requestBody.get("password");
+	        String username = requestBody.get("username"); //Extracts the value of the "username" field from the request body.
+            String password = requestBody.get("password");
 
-	        if (userRepository.findByUsername(username) != null) {
+	        if (userRepository.findByUsername(username) != null) {//Checks if a user with the given username already exists in the database by querying the userRepository.
 	            Map<String, String> response = new HashMap<>();
 	            response.put("message", "Username already exists");
-	            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+	            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);//Returns an HTTP 400 (Bad Request) response with the message if the username is already in use.
+
+
 	        }
 
-	        UserDetails user = new UserDetails();
-	        user.setUsername(username);
+	        UserDetails user = new UserDetails();//Creates a new instance of your UserDetails entity to represent the new user.
+            user.setUsername(username);
 	        user.setPassword(password); // In a real application, hash the password
-	        userRepository.save(user);
-	        Map<String, String> response = new HashMap<>();
+	        userRepository.save(user);//Saves the new user to the database using the repository.
+
+			Map<String, String> response = new HashMap<>();
 	        response.put("message", "User registered successfully");
 	        return new ResponseEntity<>(response, HttpStatus.OK);
 	 }
@@ -139,12 +134,11 @@ public class ChatbotController {
 	 }
 
 
-	 @GetMapping("/property")
-	    public String getProperty() {
-	        String propertyValue = environment.getProperty("custom.property");
-	        System.out.println(propertyValue);
-	        return "Value of custom.property: " + propertyValue;
-	    }
+    @GetMapping("/chatbot/faqs")
+    public ResponseEntity<List<QADatas>> getFaqs() {
+    List<QADatas> qnaList = qaService.getQnAList();
+    return ResponseEntity.ok(qnaList);
+    }
 	 
 
 }

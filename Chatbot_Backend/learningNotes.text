@@ -1,0 +1,9 @@
+	    public ResponseEntity<Map<String, String>> registerUser( @RequestBody Map<String, String> requestBody) {
+
+What is ResponseEntity?
+It is commonly used as the return type in controller methods to provide more detailed HTTP responses.
+
+body: JSON.stringify({ username, password }), from the front end
+ @RequestBody?
+ The @RequestBody annotation tells Spring to map the incoming JSON request body to a Map<String, String>, 
+ allowing you to extract fields like username and password from the request.

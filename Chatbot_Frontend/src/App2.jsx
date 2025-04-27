@@ -11,7 +11,6 @@ import { SocialLinksTab } from "./components/Tabs/SocialLinksTab";
 import ChatTab from "./components/Tabs/ChatTab";
 import chatbotData from "./Data/ChatbotData";
 
-import FaqList from "./components/FAQLists";
 const App = () => {
   const [messages, setMessages] = useState([
     { sender: "bot", text: "Hello! Ask me anything." },
@@ -96,6 +95,7 @@ const App = () => {
                   <div className="p-6">
                     {activeTab === "chat" && (
                       <ChatTab
+                      
                         chatbotData={chatbotData}
                         messages={messages}
                         input={input}
@@ -109,7 +109,6 @@ const App = () => {
                     {activeTab === "docs" && <DocsTab />}
                     {activeTab === "learning" && <LearningTab />}
                     {activeTab === "social" && <SocialLinksTab />}
-<FaqList/>
                   </div>
                 </div>
               ) : (
